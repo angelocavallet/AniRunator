@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1742454610 source:c:\users\angel\documents\codeblocks\anirunator\src\keyboardsimulator.cpp
+	"KeyboardSimulator.h"
+
+1742453441 c:\users\angel\documents\codeblocks\anirunator\include\keyboardsimulator.h
+
+1742460831 source:c:\users\angel\documents\codeblocks\anirunator\main.cpp
+	<iostream>
+	<windows.h>
+	<cstdlib>
+	<ctime>
+	<string>
+	<map>
+	<limits>
+
