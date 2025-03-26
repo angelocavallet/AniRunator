@@ -9,9 +9,12 @@
 void HoldKey(WORD key);
 void ReleaseKey(WORD key);
 void PressVKey(WORD key);
+void dance();
+void eat();
+void rune();
 
 std::string VirtualKeyToString(WORD key);
-WORD StringToVirtualKey(const std::string& key);
+WORD StringToVirtualKey(std::string key);
 
 WORD GetPressedKey();
 WORD listenKeyPress();
@@ -19,22 +22,54 @@ WORD getVirtualKeyByDescription();
 
 bool checkIfWantSetup(std::string description);
 
+static std::string danceStepList[4] = {
+    "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"
+};
+
+WORD runeVK = 0;
+WORD foodVK = 0;
+WORD rohVK = 0;
+
+int runeToMake = 0;
+
+static std::map<std::string, WORD> keyMap = {
+    {"A", 0x41}, {"B", 0x42}, {"C", 0x43}, {"D", 0x44}, {"E", 0x45},
+    {"F", 0x46}, {"G", 0x47}, {"H", 0x48}, {"I", 0x49}, {"J", 0x4A},
+    {"K", 0x4B}, {"L", 0x4C}, {"M", 0x4D}, {"N", 0x4E}, {"O", 0x4F},
+    {"P", 0x50}, {"Q", 0x51}, {"R", 0x52}, {"S", 0x53}, {"T", 0x54},
+    {"U", 0x55}, {"V", 0x56}, {"W", 0x57}, {"X", 0x58}, {"Y", 0x59},
+    {"Z", 0x5A},
+    {"0", 0x30}, {"1", 0x31}, {"2", 0x32}, {"3", 0x33}, {"4", 0x34},
+    {"5", 0x35}, {"6", 0x36}, {"7", 0x37}, {"8", 0x38}, {"9", 0x39},
+    {"Space", 0x20}, {"Enter", 0x0D}, {"Escape", 0x1B},
+    {"Tab", 0x09}, {"Shift", 0x10}, {"Control", 0x11}, {"Alt", 0x12},
+    {"CapsLock", 0x14}, {"F1", 0x70}, {"F2", 0x71}, {"F3", 0x72}, {"F4", 0x73},
+    {"F5", 0x74}, {"F6", 0x75}, {"F7", 0x76}, {"F8", 0x77}, {"F9", 0x78},
+    {"F10", 0x79}, {"F11", 0x7A}, {"F12", 0x7B},
+    {"NumLock", 0x90}, {"ScrollLock", 0x91},
+    {"Insert", 0x2D}, {"Home", 0x24}, {"PageUp", 0x21}, {"Delete", 0x2E},
+    {"End", 0x23}, {"PageDown", 0x22},
+    {"ArrowUp", 0x26}, {"ArrowDown", 0x28}, {"ArrowLeft", 0x25}, {"ArrowRight", 0x27}
+};
+
 int main() {
     srand(static_cast<unsigned int>(time(0)));
 
     std::cout << "Configurando hotkey de comida" << std::endl;
-    WORD foodK = listenKeyPress();
+    foodVK = listenKeyPress();
     system("cls");
 
     std::cout << "Configurando hotkey para Runa" << std::endl;
-    WORD runeK = listenKeyPress();
+    runeVK = listenKeyPress();
     system("cls");
 
-    WORD rohK = 0;
     if (checkIfWantSetup("Meter o loco com Ring of Healing? (~15 rings/hora)")){
         std::cout << "Configurando hotkey para Ring of Healing" << std::endl;
-        rohK = listenKeyPress();
+        rohVK = listenKeyPress();
     }
+    system("cls");
+
+    bool doubleRegen = checkIfWantSetup("Voce ta com regeneracao dobrada?");
     system("cls");
 
     bool hasSoftBoots = checkIfWantSetup("Ta de Soft seu safado?");
@@ -51,22 +86,64 @@ int main() {
     }
     system("cls");
 
-    std::cout << "Aguardando 10 segundos pra começar o trabaio" << std::endl;
+
+    int maxMana = 0;
+    std::cout << "Qual e o maximo de mana?" << std::endl;
+    std::cin >> maxMana;
+    system("cls");
+
+    std::cout << "Aguardando 10 segundos pra comecar o trabaio, deixa o tibao em primeiro plano" << std::endl;
     Sleep(10000);
 
-    std::cout << "Runando" << std::endl;
-    PressVKey(runeK);
+    int regenSec = 2;
 
-    Sleep(3000);
+    if (doubleRegen) regenSec * 2;
 
-    std::cout << "Runando" << std::endl;
-    PressVKey(runeK);
+    int waitFillManaSec = maxMana / regenSec;
+    int waitFillManaMiliSec = waitFillManaSec * 1000;
 
-    Sleep(3000);
-    std::cout << "Runando" << std::endl;
-    PressVKey(runeK);
+    int eatBetweenRune = waitFillManaSec / 600;
+    runeToMake = maxMana / 530;
+
+    while (true) {
+        for(int i=0; i < eatBetweenRune; i++) {
+            dance();
+            eat();
+            Sleep(waitFillManaMiliSec / eatBetweenRune);
+        }
+        rune();
+    }
 
     return 0;
+}
+
+void eat() {
+    std::cout << "Comendo" << std::endl;
+    PressVKey(foodVK);
+    PressVKey(foodVK);
+    PressVKey(foodVK);
+    PressVKey(foodVK);
+}
+
+void rune() {
+    std::cout << "Runando" << std::endl;
+    for (int i=0; i < runeToMake; i++) {
+        PressVKey(runeVK);
+        Sleep(rand() % 150 + 2000);
+    }
+}
+
+void dance() {
+    std::cout << "Dancando" << std::endl;
+    int danceStepLength = rand() % 8 + 3;
+
+    HoldKey(0x11); //segura ctrl
+    for (int i=0; i < danceStepLength; i++) {
+        std::string side = danceStepList[rand() % 3];
+        WORD sideKey = StringToVirtualKey(side);
+        PressVKey(sideKey);
+    }
+    ReleaseKey(0x11); //solta ctrl
 }
 
 void HoldKey(WORD key) {
@@ -106,43 +183,17 @@ void PressVKey(WORD key) {
     ReleaseKey(key);
 }
 
-WORD StringToVirtualKey(const std::string& key) {
-    static std::map<std::string, WORD> keyMap = {
-        {"A", 0x41}, {"B", 0x42}, {"C", 0x43}, {"D", 0x44}, {"E", 0x45},
-        {"F", 0x46}, {"G", 0x47}, {"H", 0x48}, {"I", 0x49}, {"J", 0x4A},
-        {"K", 0x4B}, {"L", 0x4C}, {"M", 0x4D}, {"N", 0x4E}, {"O", 0x4F},
-        {"P", 0x50}, {"Q", 0x51}, {"R", 0x52}, {"S", 0x53}, {"T", 0x54},
-        {"U", 0x55}, {"V", 0x56}, {"W", 0x57}, {"X", 0x58}, {"Y", 0x59},
-        {"Z", 0x5A},
-        {"0", 0x30}, {"1", 0x31}, {"2", 0x32}, {"3", 0x33}, {"4", 0x34},
-        {"5", 0x35}, {"6", 0x36}, {"7", 0x37}, {"8", 0x38}, {"9", 0x39},
-        {"Space", 0x20}, {"Enter", 0x0D}, {"Escape", 0x1B},
-        {"Tab", 0x09}, {"Shift", 0x10}, {"Control", 0x11}, {"Alt", 0x12},
-        {"CapsLock", 0x14}, {"F1", 0x70}, {"F2", 0x71}, {"F3", 0x72}, {"F4", 0x73},
-        {"F5", 0x74}, {"F6", 0x75}, {"F7", 0x76}, {"F8", 0x77}, {"F9", 0x78},
-        {"F10", 0x79}, {"F11", 0x7A}, {"F12", 0x7B},
-        {"NumLock", 0x90}, {"ScrollLock", 0x91},
-        {"Insert", 0x2D}, {"Home", 0x24}, {"PageUp", 0x21}, {"Delete", 0x2E},
-        {"End", 0x23}, {"PageDown", 0x22},
-        {"ArrowUp", 0x26}, {"ArrowDown", 0x28}, {"ArrowLeft", 0x25}, {"ArrowRight", 0x27}
-    };
-
-    std::string keyUpper = key;
-    for (char& c : keyUpper) c = toupper(c);
-
-    if (keyMap.find(keyUpper) != keyMap.end())
-    {
-        return keyMap[keyUpper];
+WORD StringToVirtualKey(std::string key) {
+    if (keyMap.find(key) != keyMap.end()){
+        return keyMap[key];
     }
-    else
-    {
-        std::cerr << "Tecla noo mapeada: " << key << std::endl;
-        return 0;
-    }
+
+    std::cerr << "Tecla nao mapeada: " << key << std::endl;
+    return 0;
 }
 
 std::string VirtualKeyToString(WORD key) {
-    static std::map<WORD, std::string> keyMap = {
+    static std::map<WORD, std::string> keyMapVKString = {
         {0x41, "A"}, {0x42, "B"}, {0x43, "C"}, {0x44, "D"}, {0x45, "E"},
         {0x46, "F"}, {0x47, "G"}, {0x48, "H"}, {0x49, "I"}, {0x4A, "J"},
         {0x4B, "K"}, {0x4C, "L"}, {0x4D, "M"}, {0x4E, "N"}, {0x4F, "O"},
@@ -162,12 +213,12 @@ std::string VirtualKeyToString(WORD key) {
         {0x26, "ArrowUp"}, {0x28, "ArrowDown"}, {0x25, "ArrowLeft"}, {0x27, "ArrowRight"}
     };
 
-    if (keyMap.find(key) != keyMap.end()) {
-        return keyMap[key];
-    } else {
-        std::cerr << "Codigo virtual nao mapeado: " << key << std::endl;
-        return "";
+    if (keyMapVKString.find(key) != keyMapVKString.end()) {
+        return keyMapVKString[key];
     }
+
+    std::cerr << "Codigo virtual nao mapeado: " << key << std::endl;
+    return "";
 }
 
 WORD GetPressedKey() {
