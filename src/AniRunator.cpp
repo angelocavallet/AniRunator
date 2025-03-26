@@ -67,7 +67,7 @@ void AniRunator::setup() {
 void AniRunator::eat(int foodToEat) {
     std::cout << "Comendo " << foodToEat << " comidas [";
     for (int i=0; i < foodToEat; i++) {
-        std::cout << "munch" << (i < foodToEat ? ", " : "]");
+        std::cout << "munch" << (i + 1 < foodToEat ? ", " : "]");
         kb->PressVKey(foodVK);
         Sleep(rand() % 150);
     }
@@ -78,7 +78,7 @@ void AniRunator::rune(int runeToMake) {
     std::cout << "Runando " << runeToMake << " runas [";
     for (int i=0; i < runeToMake; i++) {
         kb->PressVKey(runeVK);
-        std::cout << i + 1 << (i < runeToMake ? ", " : "]");
+        std::cout << i + 1 << (i + 1 < runeToMake ? ", " : "]");
         Sleep(rand() % 150 + 2000);
     }
     std::cout << std::endl;

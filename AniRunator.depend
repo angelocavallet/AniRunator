@@ -55,7 +55,7 @@
 	<limits>
 	<map>
 
-1743013728 source:c:\users\angel\documents\github\anirunator\src\keyboard.cpp
+1743014770 source:c:\users\angel\documents\github\anirunator\src\keyboard.cpp
 	"KeyBoard.h"
 
 1742608969 source:c:\users\angel\documents\github\anirunator\src\keyboardsimulator.cpp
@@ -67,4 +67,7 @@
 	"teste.h"
 
 1743014195 c:\users\angel\documents\github\anirunator\include\teste.h
+
+1743014668 source:c:\users\angel\documents\github\anirunator\src\anirunator.cpp
+	"AniRunator.h"
 
