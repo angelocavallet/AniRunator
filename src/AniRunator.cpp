@@ -36,7 +36,7 @@ void AniRunator::start() {
     int waitFillManaMiliSec = (maxMana / regenSec) * 1000;
     int danceBetweenRune = waitFillManaMiliSec / (afkSec * 1000) ;
     int runeToMakeWhenManaFull = maxMana / runeMana;
-    int eatBetweenPauses = ceil(afkSec / foodSec));
+    int eatBetweenPauses = ceil(afkSec / foodSec);
     int sleepPause = waitFillManaMiliSec / danceBetweenRune;
 
     while (true) {

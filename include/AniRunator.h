@@ -6,6 +6,7 @@
 #include <limits>
 #include <map>
 #include <ctime>
+#include <cmath>
 
 #include "KeyBoard.h"
 
