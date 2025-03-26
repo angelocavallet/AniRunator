@@ -44,7 +44,7 @@ void AniRunator::start() {
             eat(eatBetweenPauses);
             kb->dance();
 
-            std::cout << "Dormindo por " << sleepPause << "ms" << std;endl;
+            std::cout << "Dormindo por " << ((sleepPause / 1000) / 60)<< "min" << std::endl;
             Sleep(sleepPause);
         }
         rune(runeToMakeWhenManaFull);
@@ -67,19 +67,21 @@ void AniRunator::setup() {
 void AniRunator::eat(int foodToEat) {
     std::cout << "Comendo " << foodToEat << " comidas [";
     for (int i=0; i < foodToEat; i++) {
-        std::cout << "munch" << (i < foodToEat ? ", " : "]") << std::endl;
+        std::cout << "munch" << (i < foodToEat ? ", " : "]");
         kb->PressVKey(foodVK);
         Sleep(rand() % 150);
     }
+    std::cout << std::endl;
 }
 
 void AniRunator::rune(int runeToMake) {
     std::cout << "Runando " << runeToMake << " runas [";
     for (int i=0; i < runeToMake; i++) {
         kb->PressVKey(runeVK);
-        std::cout << i + 1 << (i < runeToMake ? ", " : "]") << std::endl;
+        std::cout << i + 1 << (i < runeToMake ? ", " : "]");
         Sleep(rand() % 150 + 2000);
     }
+    std::cout << std::endl;
 }
 
 void AniRunator::configMaxMana() {

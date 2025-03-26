@@ -17,14 +17,9 @@
 	<iostream>
 	"AniRunator.h"
 
-1742700355 source:c:\users\angel\documents\github\anirunator\main.cpp
+1743013728 source:c:\users\angel\documents\github\anirunator\main.cpp
 	<iostream>
-	<windows.h>
-	<cstdlib>
-	<ctime>
-	<string>
-	<map>
-	<limits>
+	"AniRunator.h"
 
 1743010705 source:c:\users\angel\onedrive\documentos\github\anirunator\src\keyboard.cpp
 	"KeyBoard.h"
@@ -45,4 +40,31 @@
 
 1743010757 source:c:\users\angel\onedrive\documentos\github\anirunator\src\anirunator.cpp
 	"AniRunator.h"
+
+1743014381 c:\users\angel\documents\github\anirunator\include\anirunator.h
+	<iostream>
+	<fstream>
+	<limits>
+	<map>
+	<ctime>
+	"KeyBoard.h"
+
+1743013728 c:\users\angel\documents\github\anirunator\include\keyboard.h
+	<windows.h>
+	<iostream>
+	<limits>
+	<map>
+
+1743013728 source:c:\users\angel\documents\github\anirunator\src\keyboard.cpp
+	"KeyBoard.h"
+
+1742608969 source:c:\users\angel\documents\github\anirunator\src\keyboardsimulator.cpp
+	"KeyboardSimulator.h"
+
+1742608969 c:\users\angel\documents\github\anirunator\include\keyboardsimulator.h
+
+1743014196 source:c:\users\angel\documents\github\anirunator\src\teste.cpp
+	"teste.h"
+
+1743014195 c:\users\angel\documents\github\anirunator\include\teste.h
 

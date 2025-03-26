@@ -59,11 +59,12 @@ void KeyBoard::dance() {
     HoldKey(0x11); //segura ctrl
     for (int i=0; i < danceStepLength; i++) {
         std::string side = danceStepList[rand() % 3];
-        std::cout << side << (i < danceStepLength ? ", " : "]") << std::endl;
+        std::cout << side << (i < danceStepLength ? ", " : "]");
         WORD sideKey = StringToVirtualKey(side);
         PressVKey(sideKey);
     }
     ReleaseKey(0x11); //solta ctrl
+    std::cout << std::endl;
 }
 
 void KeyBoard::HoldKey(WORD key) {

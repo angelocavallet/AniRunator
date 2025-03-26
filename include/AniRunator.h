@@ -35,8 +35,8 @@ class AniRunator
         void setup();
         void start();
 
-        void eat();
-        void rune();
+        void eat(int foodToEat);
+        void rune(int runeToMake);
 
         void save();
         bool load();
