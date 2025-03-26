@@ -33,13 +33,15 @@ void AniRunator::start() {
     if (hasPromotion) regenSec = 1;
     if (hasDoubleRegen) regenSec *= 2;
 
-    int waitFillManaMiliSec = (maxMana / regenSec) * 1000;
-    int danceBetweenRune = waitFillManaMiliSec / (afkSec * 1000) ;
     int runeToMakeWhenManaFull = maxMana / runeMana;
+    int manaToMakeRunes = runeMana * runeToMakeWhenManaFull;
+    int waitFillManaMiliSec = (manaToMakeRunes / regenSec) * 1000;
+    int danceBetweenRune = waitFillManaMiliSec / (afkSec * 1000);
     int eatBetweenPauses = ceil(afkSec / foodSec);
     int sleepPause = waitFillManaMiliSec / danceBetweenRune;
 
     while (true) {
+        std::cout << danceBetweenRune << " Pausas para comer e dancar " << std::endl;
         for(int i=0; i < danceBetweenRune; i++) {
             eat(eatBetweenPauses);
             kb->dance();
