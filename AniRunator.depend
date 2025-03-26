@@ -13,14 +13,9 @@
 	<map>
 	<limits>
 
-1742462205 source:c:\users\angel\onedrive\documentos\github\anirunator\main.cpp
+1743010947 source:c:\users\angel\onedrive\documentos\github\anirunator\main.cpp
 	<iostream>
-	<windows.h>
-	<cstdlib>
-	<ctime>
-	<string>
-	<map>
-	<limits>
+	"AniRunator.h"
 
 1742700355 source:c:\users\angel\documents\github\anirunator\main.cpp
 	<iostream>
@@ -30,4 +25,24 @@
 	<string>
 	<map>
 	<limits>
+
+1743010705 source:c:\users\angel\onedrive\documentos\github\anirunator\src\keyboard.cpp
+	"KeyBoard.h"
+
+1743010936 c:\users\angel\onedrive\documentos\github\anirunator\include\keyboard.h
+	<windows.h>
+	<iostream>
+	<limits>
+	<map>
+
+1743010929 c:\users\angel\onedrive\documentos\github\anirunator\include\anirunator.h
+	<iostream>
+	<fstream>
+	<limits>
+	<map>
+	<ctime>
+	"KeyBoard.h"
+
+1743010757 source:c:\users\angel\onedrive\documentos\github\anirunator\src\anirunator.cpp
+	"AniRunator.h"
 
