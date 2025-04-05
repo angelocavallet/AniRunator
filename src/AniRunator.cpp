@@ -4,14 +4,21 @@
 AniRunator::AniRunator() {
     srand(static_cast<unsigned int>(time(0)));
     kb = new KeyBoard();
+    t = new TimeUtils();
 
     runeVK = 0;
     foodVK = 0;
     rohVK = 0;
     softVK = 0;
 
+    lastDanceStep = "ArrowUp";
     maxMana = 0;
     regenSec = 0.66;
+    danceSec = 600;
+    foodSec = 264;
+    runeMana = 530;
+    rohSec = 450;
+    softSec = 0;
 
     hasPromotion = false;
     hasDoubleRegen = false;
@@ -19,6 +26,14 @@ AniRunator::AniRunator() {
     hasSoftBoots = false;
     hourLeftSoftBoots = 4;
     minLeftSoftBoots = 0;
+
+    now = t->getNowSeconds();
+
+    danceTimeoutSeconds = 0;
+    eatTimeoutSeconds = 0;
+    runeTimeoutSeconds = 0;
+    rohTimeoutSeconds = 0;
+    softTimetoutSeconds = 0;
 }
 
 AniRunator::~AniRunator() {
@@ -26,30 +41,62 @@ AniRunator::~AniRunator() {
 }
 
 void AniRunator::start() {
-    int afkSec = 600;
-    int foodSec = 264;
-    int runeMana = 530;
-
     if (hasPromotion) regenSec = 1;
     if (hasDoubleRegen) regenSec *= 2;
+    if (hasRingOfHealing) regenSec += 4;
+    if (hasSoftBoots) regenSec += 2;
+
+    std::cout << "Regen/seg: " << regenSec << std::endl;
+
+    softSec = (hourLeftSoftBoots * 120) + (minLeftSoftBoots * 60);
 
     int runeToMakeWhenManaFull = maxMana / runeMana;
     int manaToMakeRunes = runeMana * runeToMakeWhenManaFull;
-    int waitFillManaMiliSec = (manaToMakeRunes / regenSec) * 1000;
-    int danceBetweenRune = waitFillManaMiliSec / (afkSec * 1000);
-    int eatBetweenPauses = ceil(afkSec / foodSec);
-    int sleepPause = waitFillManaMiliSec / danceBetweenRune;
+    int timeToMakeRuneSec = (manaToMakeRunes / regenSec);
+    int eatTimes = (foodSec / danceSec) + 1;
+    int timeFoodSec = (foodSec * eatTimes);
 
     while (true) {
-        std::cout << danceBetweenRune << " Pausas para comer e dancar " << std::endl;
-        for(int i=0; i < danceBetweenRune; i++) {
-            eat(eatBetweenPauses);
-            kb->dance();
+        now = t->getNowSeconds();
 
-            std::cout << "Dormindo por " << ((sleepPause / 1000) / 60)<< "min" << std::endl;
-            Sleep(sleepPause);
+        if (now > danceTimeoutSeconds) {
+            kb->dance(lastDanceStep);
+            danceTimeoutSeconds = now + danceSec;
+            std::cout << "Proxima danca em " << (danceSec / 60)<< " min (" << danceSec << "s)" << std::endl;
         }
-        rune(runeToMakeWhenManaFull);
+
+        if (now > eatTimeoutSeconds) {
+            eat(eatTimes);
+            eatTimeoutSeconds = now + timeFoodSec;
+            std::cout << "Proxima comida em " << (timeFoodSec / 60)<< " min (" << timeFoodSec << "s)" << std::endl;
+        }
+
+        if (now > runeTimeoutSeconds) {
+            rune(runeToMakeWhenManaFull);
+            runeTimeoutSeconds = now + timeToMakeRuneSec;
+            std::cout << "Proxima runada em " << (timeToMakeRuneSec / 60)<< " min (" << timeToMakeRuneSec << "s)" << std::endl;
+        }
+
+        if (now > rohTimeoutSeconds) {
+            kb->PressVKey(rohVK);
+            rohTimeoutSeconds = now + (rohSec + 5);
+            std::cout << "Botou Ring of Healing por " << (rohSec / 60)<< " min (" << rohSec << "s)" << std::endl;
+        }
+
+        if (now > softTimetoutSeconds) {
+            kb->PressVKey(softVK);
+
+            softTimetoutSeconds = now + (softSec + 5);
+
+            if (hourLeftSoftBoots < 4) {
+                hourLeftSoftBoots = 4;
+                minLeftSoftBoots = 0;
+                softSec = (hourLeftSoftBoots * 120) + (minLeftSoftBoots * 60);
+            }
+            std::cout << "Botou soft por " << (softSec / 60)<< " min (" << softSec << "s)" << std::endl;
+        }
+
+        Sleep(100);
     }
 }
 
@@ -57,6 +104,7 @@ void AniRunator::setup() {
     foodVK = kb->setVK("Comida");
     runeVK = kb->setVK("Runa");
 
+    configLastDance();
     configMaxMana();
     configPromotion();
     configDoubleRegen();
@@ -86,6 +134,25 @@ void AniRunator::rune(int runeToMake) {
     std::cout << std::endl;
 }
 
+void AniRunator::configLastDance() {
+    std::cout << "Qual lado parar a danca? (N, S, L, O) Padrão Norte " << std::endl;
+    std::cin >> lastDanceStep;
+
+    if (lastDanceStep == "N" || lastDanceStep == "n") {
+        lastDanceStep = "ArrowUp";
+
+    } else if (lastDanceStep == "S" || lastDanceStep == "s") {
+            lastDanceStep = "ArrowDown";
+    } else if (lastDanceStep == "L" || lastDanceStep == "l") {
+            lastDanceStep = "ArrowRight";
+    } else if (lastDanceStep == "O" || lastDanceStep == "o") {
+            lastDanceStep = "ArrowLeft";
+    } else {
+            lastDanceStep = "ArrowUp";
+    }
+    system("cls");
+}
+
 void AniRunator::configMaxMana() {
     std::cout << "Qual e o maximo de mana?" << std::endl;
     std::cin >> maxMana;
@@ -103,7 +170,7 @@ void AniRunator::configDoubleRegen() {
 }
 
 void AniRunator::configRingOfHealing() {
-    if (checkIfWantSetup("Meter o loco com Ring of Healing? (~15 rings/hora)")) {
+    if (checkIfWantSetup("Meter o loco com Ring of Healing? (~10 rings/hora)")) {
         hasRingOfHealing = true;
         rohVK = kb->setVK("Ring of Healing");
     }

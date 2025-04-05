@@ -12,7 +12,7 @@ class KeyBoard
         KeyBoard();
         virtual ~KeyBoard();
 
-        void dance();
+        void dance(std::string lastStep);
 
         WORD setVK(std::string description);
 
@@ -26,5 +26,8 @@ class KeyBoard
 
         std::string VirtualKeyToString(WORD key);
         WORD StringToVirtualKey(std::string key);
+
+    private:
+        void step(std::string side);
 };
 #endif

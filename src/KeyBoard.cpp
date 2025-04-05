@@ -52,19 +52,29 @@ WORD KeyBoard::setVK(std::string description){
     return vk;
 }
 
-void KeyBoard::dance() {
+void KeyBoard::dance(std::string lastStep) {
     int danceStepLength = rand() % 8 + 3;
     std::cout << "Dancando " << danceStepLength << " passos [";
 
+    std::string lastSide = lastStep;
+    std::string side = lastSide;
+
     HoldKey(0x11); //segura ctrl
     for (int i=0; i < danceStepLength; i++) {
-        std::string side = danceStepList[rand() % 3];
-        std::cout << side << (i + 1 < danceStepLength ? ", " : "]");
-        WORD sideKey = StringToVirtualKey(side);
-        PressVKey(sideKey);
+        do {
+            side = danceStepList[rand() % 3];
+            if (side != lastSide) {
+                step(side);
+                std::cout << side << (i + 2 < danceStepLength ? ", " : "]");
+            }
+
+        } while (side != lastSide);
+
+        step(lastStep);
+        std::cout << side << (i + 2 < danceStepLength ? ", " : "]");
     }
+
     ReleaseKey(0x11); //solta ctrl
-    std::cout << std::endl;
 }
 
 void KeyBoard::HoldKey(WORD key) {
@@ -199,5 +209,10 @@ WORD KeyBoard::getVirtualKeyByDescription() {
         std::cout << "O código virtual da tecla '" << key << "' é: " << std::hex << vkCode << std::dec << std::endl;
     }
     return vkCode;
+}
+
+void KeyBoard::step(std::string side) {
+    WORD sideKey = StringToVirtualKey(side);
+    PressVKey(sideKey);
 }
 

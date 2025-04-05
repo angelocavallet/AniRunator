@@ -13,7 +13,7 @@
 	<map>
 	<limits>
 
-1743013132 source:c:\users\angel\onedrive\documentos\github\anirunator\main.cpp
+1743871408 source:c:\users\angel\onedrive\documentos\github\anirunator\main.cpp
 	<iostream>
 	"AniRunator.h"
 
@@ -21,24 +21,27 @@
 	<iostream>
 	"AniRunator.h"
 
-1743017387 source:c:\users\angel\onedrive\documentos\github\anirunator\src\keyboard.cpp
+1743877573 source:c:\users\angel\onedrive\documentos\github\anirunator\src\keyboard.cpp
 	"KeyBoard.h"
 
-1743010936 c:\users\angel\onedrive\documentos\github\anirunator\include\keyboard.h
+1743877108 c:\users\angel\onedrive\documentos\github\anirunator\include\keyboard.h
 	<windows.h>
 	<iostream>
 	<limits>
 	<map>
 
-1743010929 c:\users\angel\onedrive\documentos\github\anirunator\include\anirunator.h
+1743877360 c:\users\angel\onedrive\documentos\github\anirunator\include\anirunator.h
 	<iostream>
 	<fstream>
 	<limits>
 	<map>
 	<ctime>
+	<cmath>
+	<stdexcept>
+	"TimeUtils.h"
 	"KeyBoard.h"
 
-1743010757 source:c:\users\angel\onedrive\documentos\github\anirunator\src\anirunator.cpp
+1743877854 source:c:\users\angel\onedrive\documentos\github\anirunator\src\anirunator.cpp
 	"AniRunator.h"
 
 1743015374 c:\users\angel\documents\github\anirunator\include\anirunator.h
@@ -71,4 +74,10 @@
 
 1743014668 source:c:\users\angel\documents\github\anirunator\src\anirunator.cpp
 	"AniRunator.h"
+
+1743873885 c:\users\angel\onedrive\documentos\github\anirunator\include\timeutils.h
+	<chrono>
+
+1743873889 source:c:\users\angel\onedrive\documentos\github\anirunator\src\timeutils.cpp
+	"TimeUtils.h"
 

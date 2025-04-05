@@ -12,7 +12,7 @@ int main() {
     }
 
     std::cout << "Aguardando 10 segundos pra comecar o trabaio, deixa o tibao em primeiro plano" << std::endl;
-    Sleep(10000);
+    Sleep(1000);
 
     ani->start();
 
