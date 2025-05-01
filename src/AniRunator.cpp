@@ -1,31 +1,23 @@
 #include "AniRunator.h"
 #define _SAVE_FILE_NAME "cfg"
 
+void AniRunator::showHeader() {
+    std::cout << R"(
+   _____         .____________                     __
+  /  _  \   ____ |__\______   \__ __  ____ _____ _/  |_  ___________
+ /  /_\  \ /    \|  ||       _/  |  \/    \\__  \\   __\/  _ \_  __ \
+/    |    \   |  \  ||    |   \  |  /   |  \/ __ \|  | (  <_> )  | \/
+\____|__  /___|  /__||____|_  /____/|___|  (____  /__|  \____/|__|
+        \/     \/           \/           \/     \/
+
+                        A N I H U N A T O R
+    )" << std::endl;
+}
+
 AniRunator::AniRunator() {
     srand(static_cast<unsigned int>(time(0)));
     kb = new KeyBoard();
     t = new TimeUtils();
-
-    runeVK = 0;
-    foodVK = 0;
-    rohVK = 0;
-    softVK = 0;
-
-    lastDanceStep = "ArrowUp";
-    maxMana = 0;
-    regenSec = 0.66;
-    danceSec = 600;
-    foodSec = 264;
-    runeMana = 530;
-    rohSec = 450;
-    softSec = 0;
-
-    hasPromotion = false;
-    hasDoubleRegen = false;
-    hasRingOfHealing = false;
-    hasSoftBoots = false;
-    hourLeftSoftBoots = 4;
-    minLeftSoftBoots = 0;
 
     now = t->getNowSeconds();
 
@@ -41,28 +33,29 @@ AniRunator::~AniRunator() {
 }
 
 void AniRunator::start() {
-    if (hasPromotion) regenSec = 1;
-    if (hasDoubleRegen) regenSec *= 2;
-    if (hasRingOfHealing) regenSec += 4;
-    if (hasSoftBoots) regenSec += 2;
+    if (config.hasPromotion) config.regenSec = 1;
+    if (config.hasDoubleRegen) config.regenSec *= 2;
+    if (config.hasRingOfHealing) config.regenSec += 4;
+    if (config.hasSoftBoots) config.regenSec += 2;
 
-    std::cout << "Regen/seg: " << regenSec << std::endl;
+    std::cout << "Regen/seg: " << config.regenSec << std::endl;
 
-    softSec = (hourLeftSoftBoots * 120) + (minLeftSoftBoots * 60);
+    config.softSec = (config.hourLeftSoftBoots * 120) + (config.minLeftSoftBoots * 60);
 
-    int runeToMakeWhenManaFull = maxMana / runeMana;
-    int manaToMakeRunes = runeMana * runeToMakeWhenManaFull;
-    int timeToMakeRuneSec = (manaToMakeRunes / regenSec);
-    int eatTimes = (foodSec / danceSec) + 1;
-    int timeFoodSec = (foodSec * eatTimes);
+    int runeToMakeWhenManaFull = config.maxMana / config.runeMana;
+    int manaToMakeRunes = config.runeMana * runeToMakeWhenManaFull;
+    int timeToMakeRuneSec = (manaToMakeRunes / config.regenSec);
+
+    int eatTimes = (config.foodSec / config.danceSec) + 1;
+    int timeFoodSec = (config.foodSec * eatTimes);
 
     while (true) {
         now = t->getNowSeconds();
 
         if (now > danceTimeoutSeconds) {
-            kb->dance(lastDanceStep);
-            danceTimeoutSeconds = now + danceSec;
-            std::cout << "Proxima danca em " << (danceSec / 60)<< " min (" << danceSec << "s)" << std::endl;
+            kb->dance(config.lastDanceStep);
+            danceTimeoutSeconds = now + config.danceSec;
+            std::cout << "Proxima danca em " << (config.danceSec / 60)<< " min (" << config.danceSec << "s)" << std::endl;
         }
 
         if (now > eatTimeoutSeconds) {
@@ -78,22 +71,22 @@ void AniRunator::start() {
         }
 
         if (now > rohTimeoutSeconds) {
-            kb->PressVKey(rohVK);
-            rohTimeoutSeconds = now + (rohSec + 5);
-            std::cout << "Botou Ring of Healing por " << (rohSec / 60)<< " min (" << rohSec << "s)" << std::endl;
+            kb->PressVKey(config.rohVK);
+            rohTimeoutSeconds = now + (config.rohSec + 5);
+            std::cout << "Botou Ring of Healing por " << (config.rohSec / 60)<< " min (" << config.rohSec << "s)" << std::endl;
         }
 
         if (now > softTimetoutSeconds) {
-            kb->PressVKey(softVK);
+            kb->PressVKey(config.softVK);
 
-            softTimetoutSeconds = now + (softSec + 5);
+            softTimetoutSeconds = now + (config.softSec + 5);
 
-            if (hourLeftSoftBoots < 4) {
-                hourLeftSoftBoots = 4;
-                minLeftSoftBoots = 0;
-                softSec = (hourLeftSoftBoots * 120) + (minLeftSoftBoots * 60);
+            if (config.hourLeftSoftBoots < 4) {
+                config.hourLeftSoftBoots = 4;
+                config.minLeftSoftBoots = 0;
+                config.softSec = (config.hourLeftSoftBoots * 120) + (config.minLeftSoftBoots * 60);
             }
-            std::cout << "Botou soft por " << (softSec / 60)<< " min (" << softSec << "s)" << std::endl;
+            std::cout << "Botou soft por " << (config.softSec / 60)<< " min (" << config.softSec << "s)" << std::endl;
         }
 
         Sleep(100);
@@ -101,8 +94,8 @@ void AniRunator::start() {
 }
 
 void AniRunator::setup() {
-    foodVK = kb->setVK("Comida");
-    runeVK = kb->setVK("Runa");
+    config.foodVK = kb->setVK("Comida");
+    config.runeVK = kb->setVK("Runa");
 
     configLastDance();
     configMaxMana();
@@ -118,7 +111,7 @@ void AniRunator::eat(int foodToEat) {
     std::cout << "Comendo " << foodToEat << " comidas [";
     for (int i=0; i < foodToEat; i++) {
         std::cout << "munch" << (i + 1 < foodToEat ? ", " : "]");
-        kb->PressVKey(foodVK);
+        kb->PressVKey(config.foodVK);
         Sleep(rand() % 150);
     }
     std::cout << std::endl;
@@ -127,7 +120,7 @@ void AniRunator::eat(int foodToEat) {
 void AniRunator::rune(int runeToMake) {
     std::cout << "Runando " << runeToMake << " runas [";
     for (int i=0; i < runeToMake; i++) {
-        kb->PressVKey(runeVK);
+        kb->PressVKey(config.runeVK);
         std::cout << i + 1 << (i + 1 < runeToMake ? ", " : "]");
         Sleep(rand() % 150 + 2000);
     }
@@ -135,58 +128,67 @@ void AniRunator::rune(int runeToMake) {
 }
 
 void AniRunator::configLastDance() {
-    std::cout << "Qual lado parar a danca? (N, S, L, O) Padrão Norte " << std::endl;
-    std::cin >> lastDanceStep;
+    std::cout << "Qual lado parar a danca? (N, S, L, O) Padrao Norte " << std::endl;
 
-    if (lastDanceStep == "N" || lastDanceStep == "n") {
-        lastDanceStep = "ArrowUp";
+    std::cin.ignore();
 
-    } else if (lastDanceStep == "S" || lastDanceStep == "s") {
-            lastDanceStep = "ArrowDown";
-    } else if (lastDanceStep == "L" || lastDanceStep == "l") {
-            lastDanceStep = "ArrowRight";
-    } else if (lastDanceStep == "O" || lastDanceStep == "o") {
-            lastDanceStep = "ArrowLeft";
+    std::getline(std::cin, config.lastDanceStep);
+
+    std::cout << "Entrada lida: '" << config.lastDanceStep << "'" << std::endl;
+
+    if (config.lastDanceStep == "N" || config.lastDanceStep == "n") {
+        config.lastDanceStep = "ArrowUp";
+    } else if (config.lastDanceStep == "S" || config.lastDanceStep == "s") {
+        config.lastDanceStep = "ArrowDown";
+    } else if (config.lastDanceStep == "L" || config.lastDanceStep == "l") {
+        config.lastDanceStep = "ArrowRight";
+    } else if (config.lastDanceStep == "O" || config.lastDanceStep == "o") {
+        config.lastDanceStep = "ArrowLeft";
     } else {
-            lastDanceStep = "ArrowUp";
+        config.lastDanceStep = "ArrowUp";
     }
+
+    std::cout << "Direcao final: " << config.lastDanceStep << std::endl;
     system("cls");
 }
 
 void AniRunator::configMaxMana() {
     std::cout << "Qual e o maximo de mana?" << std::endl;
-    std::cin >> maxMana;
+    std::cin >> config.maxMana;
+    std::cin.ignore();
     system("cls");
 }
 
 void AniRunator::configPromotion() {
-    hasPromotion = checkIfWantSetup("Tem promotion?");
+    config.hasPromotion = checkIfWantSetup("Tem promotion?");
     system("cls");
 }
 
 void AniRunator::configDoubleRegen() {
-    hasDoubleRegen = checkIfWantSetup("Voce ta com regeneracao dobrada?");
+    config.hasDoubleRegen = checkIfWantSetup("Voce ta com regeneracao dobrada?");
     system("cls");
 }
 
 void AniRunator::configRingOfHealing() {
     if (checkIfWantSetup("Meter o loco com Ring of Healing? (~10 rings/hora)")) {
-        hasRingOfHealing = true;
-        rohVK = kb->setVK("Ring of Healing");
+        config.hasRingOfHealing = true;
+        config.rohVK = kb->setVK("Ring of Healing");
     }
 }
 
 void AniRunator::configSoftBoots() {
     if (checkIfWantSetup("Ta de Soft seu safado?")) {
-        hasSoftBoots = true;
-        softVK = kb->setVK("Soft Boots");
+        config.hasSoftBoots = true;
+        config.softVK = kb->setVK("Soft Boots");
 
         if(!checkIfWantSetup("A soft ta novinha?")) {
             std::cout << "Seu pobre. Quantas horas inteiras ainda tem?" << std::endl;
-            std::cin >> hourLeftSoftBoots;
+            std::cin >> config.hourLeftSoftBoots;
+            std::cin.ignore();
 
             std::cout << "Ta e os minutos?" << std::endl;
-            std::cin >> minLeftSoftBoots;
+            std::cin >> config.minLeftSoftBoots;
+            std::cin.ignore();
             system("cls");
         }
     }
@@ -196,6 +198,7 @@ bool AniRunator::checkIfWantSetup(std::string description) {
     char option;
     std::cout << description << " (s/n): ";
     std::cin >> option;
+    std::cin.ignore();
 
     if (std::tolower(option) == 's') return true;
     return false;
@@ -204,19 +207,35 @@ bool AniRunator::checkIfWantSetup(std::string description) {
 void AniRunator::save() {
     std::ofstream file(_SAVE_FILE_NAME, std::ios::binary);
     if (!file) {
-        std::cerr << "Erro ao abrir o arquivo para escrita!" << std::endl;
+        std::cerr << "Erro ao abrir configuracao " << _SAVE_FILE_NAME << " para escrita!" << std::endl;
         return;
     }
-    file.write(reinterpret_cast<const char*>(this), sizeof(AniRunator));
+
+    file.write(reinterpret_cast<const char*>(&config), sizeof(AniRunatorConfig));
     file.close();
+
+    if (!file) {
+        std::cerr << "Erro ao salvar os dados!" << std::endl;
+    } else {
+        std::cout << "Configuracao salva com sucesso." << std::endl;
+    }
 }
 
 bool AniRunator::load() {
     std::ifstream file(_SAVE_FILE_NAME, std::ios::binary);
     if (!file) {
-        std::cerr << "Erro ao abrir o arquivo para leitura!" << std::endl;
+        std::cerr << "Erro ao abrir configuracao " << _SAVE_FILE_NAME << " para leitura!" << std::endl;
         return false;
     }
-    file.read(reinterpret_cast<char*>(this), sizeof(AniRunator));
+
+    file.read(reinterpret_cast<char*>(&config), sizeof(AniRunatorConfig));
     file.close();
+
+    if (!file || file.gcount() != sizeof(AniRunatorConfig)) {
+        std::cerr << "Erro ao ler os dados do arquivo ou estrutura incompativel." << std::endl;
+        return false;
+    }
+
+    std::cout << "Configuracao carregada com sucesso." << std::endl;
+    return true;
 }

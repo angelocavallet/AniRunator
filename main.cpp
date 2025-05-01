@@ -4,10 +4,12 @@
 
 int main() {
     AniRunator* ani = new AniRunator();
+    ani->showHeader();
 
-    ani->load();
+    bool loaded = ani->load();
 
-    if(ani->checkIfWantSetup("Nova config?")) {
+
+    if(!loaded || ani->checkIfWantSetup("Nova config?")) {
         ani->setup();
     }
 
