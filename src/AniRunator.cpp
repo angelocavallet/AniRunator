@@ -33,35 +33,44 @@ AniRunator::~AniRunator() {
 }
 
 void AniRunator::start() {
+    int maxAfkTime = 840;
+    int manaToMakeAvalanche = 530;
+    int maxfoodTime = 1200;
+    int brownMushroomSec = 264;
+    int eatTimes = maxfoodTime / brownMushroomSec;
+
+    config.foodSec = brownMushroomSec * eatTimes;
+    config.runeMana = manaToMakeAvalanche;
+    config.danceSec = maxAfkTime;
+
     if (config.hasPromotion) config.regenSec = 1;
     if (config.hasDoubleRegen) config.regenSec *= 2;
     if (config.hasRingOfHealing) config.regenSec += 4;
     if (config.hasSoftBoots) config.regenSec += 2;
-
-    std::cout << "Regen/seg: " << config.regenSec << std::endl;
-
-    config.softSec = (config.hourLeftSoftBoots * 120) + (config.minLeftSoftBoots * 60);
+    if (config.hasSoftBoots) config.softSec = (config.hourLeftSoftBoots * 120) + (config.minLeftSoftBoots * 60);
 
     int runeToMakeWhenManaFull = config.maxMana / config.runeMana;
     int manaToMakeRunes = config.runeMana * runeToMakeWhenManaFull;
     int timeToMakeRuneSec = (manaToMakeRunes / config.regenSec);
 
-    int eatTimes = (config.foodSec / config.danceSec) + 1;
-    int timeFoodSec = (config.foodSec * eatTimes);
+    std::cout << "AFK Time (s): " << config.danceSec << std::endl;
+    std::cout << "Food Time (s): " << config.foodSec << std::endl;
+    std::cout << "Rune Time (s): " << timeToMakeRuneSec << std::endl;
+    std::cout << "Regen/seg: " << config.regenSec << std::endl;
 
     while (true) {
         now = t->getNowSeconds();
 
         if (now > danceTimeoutSeconds) {
-            kb->dance(config.lastDanceStep);
+            kb->dance(/*config.lastDanceStep*/);
             danceTimeoutSeconds = now + config.danceSec;
             std::cout << "Proxima danca em " << (config.danceSec / 60)<< " min (" << config.danceSec << "s)" << std::endl;
         }
 
         if (now > eatTimeoutSeconds) {
             eat(eatTimes);
-            eatTimeoutSeconds = now + timeFoodSec;
-            std::cout << "Proxima comida em " << (timeFoodSec / 60)<< " min (" << timeFoodSec << "s)" << std::endl;
+            eatTimeoutSeconds = now + config.foodSec;
+            std::cout << "Proxima comida em " << (config.foodSec / 60)<< " min (" << config.foodSec << "s)" << std::endl;
         }
 
         if (now > runeTimeoutSeconds) {
@@ -70,13 +79,13 @@ void AniRunator::start() {
             std::cout << "Proxima runada em " << (timeToMakeRuneSec / 60)<< " min (" << timeToMakeRuneSec << "s)" << std::endl;
         }
 
-        if (now > rohTimeoutSeconds) {
+        if (config.hasRingOfHealing && now > rohTimeoutSeconds) {
             kb->PressVKey(config.rohVK);
             rohTimeoutSeconds = now + (config.rohSec + 5);
             std::cout << "Botou Ring of Healing por " << (config.rohSec / 60)<< " min (" << config.rohSec << "s)" << std::endl;
         }
 
-        if (now > softTimetoutSeconds) {
+        if (config.hasSoftBoots && now > softTimetoutSeconds) {
             kb->PressVKey(config.softVK);
 
             softTimetoutSeconds = now + (config.softSec + 5);
@@ -97,7 +106,7 @@ void AniRunator::setup() {
     config.foodVK = kb->setVK("Comida");
     config.runeVK = kb->setVK("Runa");
 
-    configLastDance();
+    //configLastDance();
     configMaxMana();
     configPromotion();
     configDoubleRegen();
@@ -131,7 +140,7 @@ void AniRunator::configLastDance() {
     std::cout << "Qual lado parar a danca? (N, S, L, O) Padrao Norte " << std::endl;
 
     std::cin.ignore();
-
+/*
     std::getline(std::cin, config.lastDanceStep);
 
     std::cout << "Entrada lida: '" << config.lastDanceStep << "'" << std::endl;
@@ -147,8 +156,8 @@ void AniRunator::configLastDance() {
     } else {
         config.lastDanceStep = "ArrowUp";
     }
-
     std::cout << "Direcao final: " << config.lastDanceStep << std::endl;
+*/
     system("cls");
 }
 

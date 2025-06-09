@@ -69,11 +69,11 @@ WORD KeyBoard::setVK(std::string description){
     return vk;
 }
 
-void KeyBoard::dance(std::string lastStep) {
+void KeyBoard::dance(/*std::string lastStep*/) {
     int danceStepLength = rand() % 8 + 3;
     std::cout << "Dancando " << danceStepLength << " passos [";
 
-    std::string lastSide = lastStep;
+    std::string lastSide = ""; //lastStep;
     std::string side = lastSide;
 
     HoldKey(0x11);

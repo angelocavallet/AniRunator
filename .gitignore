@@ -32,3 +32,6 @@
 *.app
 
 cfg
+AniRunator.depend
+include/teste.h
+src/teste.cpp

@@ -19,19 +19,15 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
-			<Add directory="C:/Users/angel/OneDrive/Documentos/GitHub/AniRunator/" />
+			<Add directory="../AniRunator" />
 		</Compiler>
-		<ResourceCompiler>
-			<Add directory="C:/Users/angel/OneDrive/Documentos/GitHub/AniRunator/" />
-		</ResourceCompiler>
-		<Linker>
-			<Add directory="C:/Users/angel/OneDrive/Documentos/GitHub/AniRunator/" />
-		</Linker>
 		<Unit filename="include/AniRunator.h" />
 		<Unit filename="include/KeyBoard.h" />
+		<Unit filename="include/TimeUtils.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/AniRunator.cpp" />
 		<Unit filename="src/KeyBoard.cpp" />
+		<Unit filename="src/TimeUtils.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

@@ -18,7 +18,7 @@ struct AniRunatorConfig {
     int rohVK;
     int softVK;
 
-    std::string lastDanceStep;
+    //std::string lastDanceStep;
     int maxMana;
     double regenSec;
     int danceSec;
