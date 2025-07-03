@@ -1,5 +1,5 @@
 # AniRunator
-just a famous isometric? mmorpg rune maker (ML training) bot
+just a rune maker (ML training) bot for an old but famous isometric? mmorpg
 
 under develoment
 food select/save
