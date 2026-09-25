@@ -1,10 +1,4 @@
 # AniRunator
-just a rune maker (ML training) bot for an old but famous isometric? mmorpg
+rune maker (Magic Level training) Tibia bot
 
-under develoment:
-
-- food select/save
-- rune select/save
-- last dance step select/save
-
-PR are welcome
+The project was discontinued and moved to Python, which offers better access to the necessary resources.
